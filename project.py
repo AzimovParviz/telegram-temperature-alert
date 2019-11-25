@@ -38,7 +38,7 @@ def temp():
 
 #alarm function
 def alarm(temp, userid):
-    alarm="***ALERT !!! TEMPERATURE BROKE THE THRESHHOLD, CURRENT TEMPERATURE: " + str(temp) + "C"
+    alarm="⚠️***ALERT !!!⚠️ TEMPERATURE BROKE THE THRESHHOLD, CURRENT TEMPERATURE: " + str(temp) + "C"
     #if the temperature goes lower than minimum or higher than maximum, the bot will send the message wit
     bot.send_message(chat_id=userid, text=alarm)
        
@@ -64,8 +64,7 @@ dispatcher.add_handler(start_handler)
 #/current_temp - command to check the current temperature of the sesnor
 temperature_handler = CommandHandler('current_temp',temperature)
 dispatcher.add_handler(temperature_handler)
-unknown_handler = MessageHandler(Filters.command, unknown)
-dispatcher.add_handler(unknown_handler)
+
 #read the users from the users.txt  
 #split the user IDs into the chatid array
 while True: 
