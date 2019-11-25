@@ -23,10 +23,8 @@ def start(update, context):
 def temperature(update, context):
     try:
         kek = temp()
-        bot.send_message(chat_id=update.message.chat_id, text="Temperature from the sensor goes here"+ str(kek))
+        bot.send_message(chat_id=update.message.chat_id, text="Current temperature is: "+ str(kek))
     except BadRequest as e:
-        if str(e)=="Chat not found":
-            print("id from text file fuckery")
         print(e)
 
 
@@ -43,7 +41,7 @@ def alarm(temp, userid):
     alarm="***ALERT !!! TEMPERATURE BROKE THE THRESHHOLD, CURRENT TEMPERATURE: " + str(temp) + "C"
     #if the temperature goes lower than minimum or higher than maximum, the bot will send the message wit
     bot.send_message(chat_id=userid, text=alarm)
-    #bot.send_message(chat_id="Ckti4BRuCEzsLJ6mFvczMQ", text=alarm)    
+       
     
 #unknown command handler    
 def unknown(update, context):
@@ -66,6 +64,8 @@ dispatcher.add_handler(start_handler)
 #/current_temp - command to check the current temperature of the sesnor
 temperature_handler = CommandHandler('current_temp',temperature)
 dispatcher.add_handler(temperature_handler)
+unknown_handler = MessageHandler(Filters.command, unknown)
+dispatcher.add_handler(unknown_handler)
 #read the users from the users.txt  
 #split the user IDs into the chatid array
 while True: 
@@ -73,16 +73,9 @@ while True:
     #split the user IDs into the chatid array
     chatid = text_file.read()
     chatid = chatid.split(' ')
-    #remove the comma from the last id in the text file
-    #chatid[len(chatid)-1] = chatid[len(chatid)-1].replace(',','')
-   # dispatcher.add_handler(temperature_handler)
-    # bot.send_message(chat_id=chatid[1], text="Temperature is: ")
-    """here goes the retrieval of temperature from the sensor"""
-    """***TEMPERATURE FETCH***"""
+    #receive temperature from sensor
     tem1 = temp() 
     for id in chatid:
-        #it's faster to just use bot.send_message than to call the function
-        #bot.send_message(chat_id=id, text="Temperature is: ")
         if not (max_temp>=tem1>=min_temp):
             if id:
                 try:
