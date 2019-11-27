@@ -1,4 +1,6 @@
 import telegram
+import os
+import subprocess
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters)
 import logging
 from time import sleep
@@ -51,11 +53,13 @@ def unknown(update, context):
 #constants for temperature thresholds
 min_temp = 1
 max_temp = 22
-bot = telegram.Bot(token='1011338484:AAHkUFziy2zyDWDgfANzpAgGJr9baERaO70')
+#input the token once on start
+input(token)
+bot = telegram.Bot(token=token)
 #tests if the bot exists
 print(bot.get_me())
 #initialize updater and dispatcher
-updater = Updater(token='1011338484:AAHkUFziy2zyDWDgfANzpAgGJr9baERaO70', use_context=True)
+updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher
 updater.start_polling()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
