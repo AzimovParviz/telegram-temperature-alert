@@ -23,11 +23,15 @@ def start(update, context):
 
 #sends the temperature to the user who requested it
 def temperature(update, context):
+    cmd1 = "sudo espeak \"The temperature is %s celcius\" -w /home/pi/src/fm_transmitter/file.wav"
+    cmd2 = "sudo /home/pi/src/fm_transmitter/fm_transmitter -f 87.50 /home/pi/src/fm_transmitter/file.wav"
+
     try:
         kek = temp()
         bot.send_message(chat_id=update.message.chat_id, text="🌡️ Current temperature is: "+ str(kek))
-        subprocess.call(cmd1 %kek, Shell=True)
-        subprocess.call(cmd2, Shell=True)
+        subprocess.call(cmd1 % kek, shell=True)
+        sleep(2)
+        subprocess.call(cmd2, shell=True)
     except BadRequest as e:
         print(e)
 
@@ -57,7 +61,7 @@ min_temp = 1
 max_temp = 22
 #first argument for cli to generate the temperature voice line
 cmd1 = "sudo espeak \"The temperature is %s celcius\" -w /home/pi/src/fm_transmitter/file.wav"
-cmd2 = "sudo /home/pi/src/fm_transmitter/fm_transmitter -f 95.50 /home/pi/src/fm_transmitter/file.wav"
+cmd2 = "sudo /home/pi/src/fm_transmitter/fm_transmitter -f 87.50 /home/pi/src/fm_transmitter/file.wav"
 #input the token once on start
 token = input("enter the token")
 bot = telegram.Bot(token=token)
