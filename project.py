@@ -9,7 +9,7 @@ from telegram.error import (TelegramError, Unauthorized, BadRequest,
 
 #when the user starts talking with bot
 def start(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, text="Yo yo wasap boys it's Animesh 3000")
+    context.bot.send_message(chat_id=update.message.chat_id, text="Yo yo wasap boys it's Animesh 3000 🤖")
     #write the user id of the person who starts chatting with the bot
     text_file = open("users.txt", "a")
     text_read = open("users.txt", "r")
@@ -18,18 +18,15 @@ def start(update, context):
         text_file.write(str(update.message.chat_id)+' ')
     text_file.close()
 
-#sends temperature from the sensor, replace the value of text with the actual value from the sensor
-#it's slower to call this function(around several seconds in worst cases) than to just use bot.send_message in the loop - consider removing it completely
+#sends temperature from the sensor to the user who requested it
 def temperature(update, context):
     try:
         kek = temp()
-        bot.send_message(chat_id=update.message.chat_id, text="Temperature from the sensor goes here"+ str(kek))
+        bot.send_message(chat_id=update.message.chat_id, text="🌡️ Current temperature is: "+ str(kek))
     except BadRequest as e:
-        if str(e)=="Chat not found":
-            print("id from text file fuckery")
-        print(e)
+        pass
 
-
+#returns the temperature from the sensor
 def temp():
     temp1 = MCP3008(0)
     T = 15 * temp1.raw_value - 2048
@@ -40,10 +37,10 @@ def temp():
 
 #alarm function
 def alarm(temp, userid):
-    alarm="***ALERT !!! TEMPERATURE BROKE THE THRESHHOLD, CURRENT TEMPERATURE: " + str(temp) + "C"
+    alarm="⚠️***ALERT ***⚠️ TEMPERATURE BROKE THE THRESHOLD, 🌡️ CURRENT TEMPERATURE: " + str(temp) + "C"
     #if the temperature goes lower than minimum or higher than maximum, the bot will send the message wit
     bot.send_message(chat_id=userid, text=alarm)
-    #bot.send_message(chat_id="Ckti4BRuCEzsLJ6mFvczMQ", text=alarm)    
+       
     
 #unknown command handler    
 def unknown(update, context):
@@ -51,44 +48,41 @@ def unknown(update, context):
 
 
 #constants for temperature thresholds
-min_temp = 1
-max_temp = 22
-bot = telegram.Bot(token='1011338484:AAHkUFziy2zyDWDgfANzpAgGJr9baERaO70')
+min_temp = input("set the minimal temperature: ")
+max_temp = input("set the maximum temperature: ")
+#input the token once on startup
+token = input("please input token")
+bot = telegram.Bot(token=token)
 #tests if the bot exists
 print(bot.get_me())
-#initialize updater and dispatcher
-updater = Updater(token='1011338484:AAHkUFziy2zyDWDgfANzpAgGJr9baERaO70', use_context=True)
+#initialize updater and dispatcher (Telegram API)
+updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher
 updater.start_polling()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+#/start - initiates the dialogue wiht the bot, default telegram bot command
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 #/current_temp - command to check the current temperature of the sesnor
 temperature_handler = CommandHandler('current_temp',temperature)
 dispatcher.add_handler(temperature_handler)
-#read the users from the users.txt  
-#split the user IDs into the chatid array
 while True: 
     text_file = open("users.txt", "r")
-    #split the user IDs into the chatid array
+    #split the user IDs into the chatid list
     chatid = text_file.read()
     chatid = chatid.split(' ')
-    #remove the comma from the last id in the text file
-    #chatid[len(chatid)-1] = chatid[len(chatid)-1].replace(',','')
-   # dispatcher.add_handler(temperature_handler)
-    # bot.send_message(chat_id=chatid[1], text="Temperature is: ")
-    """here goes the retrieval of temperature from the sensor"""
-    """***TEMPERATURE FETCH***"""
-    tem1 = temp() 
+    #receive temperature from sensor
+    tem1 = temp()
+    #cycles through the ids in the file while also checking the temperature and
+    #sends the alert if the temperature goes over the limit
     for id in chatid:
-        #it's faster to just use bot.send_message than to call the function
-        #bot.send_message(chat_id=id, text="Temperature is: ")
-        if not (max_temp>=tem1>=min_temp):
-            if id:
-                try:
-                    alarm(tem1, id)
-                except BadRequest as e:
-                    print(e)
-                    pass
+        if not (int(max_temp)>=tem1>=int(min_temp)):
+            try:
+                alarm(tem1, id)
+            except BadRequest as e:
+                print(e)
+                pass
+    
+    #sets the pause between the loop cycles to not overload the API and receive negative response from the server
     sleep(10)
 text_file.close()
