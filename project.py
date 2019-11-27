@@ -51,7 +51,7 @@ def unknown(update, context):
 min_temp = input("set the minimal temperature: ")
 max_temp = input("set the maximum temperature: ")
 #input the token once on startup
-token = input("please input token: ")
+token = input("please input token")
 bot = telegram.Bot(token=token)
 #tests if the bot exists
 print(bot.get_me())
@@ -75,11 +75,14 @@ while True:
     tem1 = temp()
     #cycles through the ids in the file while also checking the temperature and
     #sends the alert if the temperature goes over the limit
+    for id in chatid:
+        if not (max_temp>=tem1>=min_temp):
             try:
                 alarm(tem1, id)
             except BadRequest as e:
                 print(e)
                 pass
+    
     #sets the pause between the loop cycles to not overload the API and receive negative response from the server
     sleep(10)
 text_file.close()
