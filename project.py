@@ -59,7 +59,7 @@ max_temp = 22
 cmd1 = "sudo espeak \"The temperature is %s celcius\" -w /home/pi/src/fm_transmitter/file.wav"
 cmd2 = "sudo /home/pi/src/fm_transmitter/fm_transmitter -f 95.50 /home/pi/src/fm_transmitter/file.wav"
 #input the token once on start
-token = input(token)
+token = input("enter the token")
 bot = telegram.Bot(token=token)
 #tests if the bot exists
 print(bot.get_me())
