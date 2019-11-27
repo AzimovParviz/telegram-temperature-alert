@@ -24,7 +24,7 @@ def temperature(update, context):
         kek = temp()
         bot.send_message(chat_id=update.message.chat_id, text="🌡️ Current temperature is: "+ str(kek))
     except BadRequest as e:
-        print(e)
+        pass
 
 #returns the temperature from the sensor
 def temp():
