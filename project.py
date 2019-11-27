@@ -26,8 +26,8 @@ def temperature(update, context):
     try:
         kek = temp()
         bot.send_message(chat_id=update.message.chat_id, text="🌡️ Current temperature is: "+ str(kek))
-        subprocesses.call(cmd1 %kek, Shell=True)
-        subprocesses.call(cmd2, Shell=True)
+        subprocess.call(cmd1 %kek, Shell=True)
+        subprocess.call(cmd2, Shell=True)
     except BadRequest as e:
         print(e)
 
