@@ -76,7 +76,7 @@ while True:
     #cycles through the ids in the file while also checking the temperature and
     #sends the alert if the temperature goes over the limit
     for id in chatid:
-        if not (max_temp>=tem1>=min_temp):
+        if not (int(max_temp)>=tem1>=int(min_temp)):
             try:
                 alarm(tem1, id)
             except BadRequest as e:
