@@ -53,6 +53,7 @@ def unknown(update, context):
 #constants for temperature thresholds
 min_temp = 1
 max_temp = 22
+cmd = ""
 #input the token once on start
 input(token)
 bot = telegram.Bot(token=token)
