@@ -9,7 +9,7 @@ from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
 
 
-#when the user starts talking with bot
+#when the user starts talking with bot, stores the chat id in a separate file
 def start(update, context):
     context.bot.send_message(chat_id=update.message.chat_id, text="Yo yo wasap boys it's Animesh 3000 🤖")
     #write the user id of the person who starts chatting with the bot
@@ -20,16 +20,18 @@ def start(update, context):
         text_file.write(str(update.message.chat_id)+' ')
     text_file.close()
 
-#sends temperature from the sensor, replace the value of text with the actual value from the sensor
-#it's slower to call this function(around several seconds in worst cases) than to just use bot.send_message in the loop - consider removing it completely
+
+#sends the temperature to the user who requested it
 def temperature(update, context):
     try:
         kek = temp()
         bot.send_message(chat_id=update.message.chat_id, text="🌡️ Current temperature is: "+ str(kek))
+        subprocesses.call(cmd1 %kek, Shell=True)
+        subprocesses.call(cmd2, Shell=True)
     except BadRequest as e:
         print(e)
 
-
+#calculation of the temperature from the sensor
 def temp():
     temp1 = MCP3008(0)
     T = 15 * temp1.raw_value - 2048
@@ -38,7 +40,7 @@ def temp():
     sleep(0.5)
     return(temp)
 
-#alarm function
+#alarm function that is called when the temperature breaks the limit
 def alarm(temp, userid):
     alarm="⚠️***ALERT ***⚠️ TEMPERATURE BROKE THE THRESHOLD, 🌡️ CURRENT TEMPERATURE: " + str(temp) + "C"
     #if the temperature goes lower than minimum or higher than maximum, the bot will send the message wit
@@ -53,7 +55,9 @@ def unknown(update, context):
 #constants for temperature thresholds
 min_temp = 1
 max_temp = 22
-cmd = ""
+#first argument for cli to generate the temperature voice line
+cmd1 = "sudo espeak \"The temperature is %s celcius\" -w /home/pi/src/fm_transmitter/file.wav"
+cmd2 = "sudo /home/pi/src/fm_transmitter/fm_transmitter -f 95.50 /home/pi/src/fm_transmitter/file.wav"
 #input the token once on start
 input(token)
 bot = telegram.Bot(token=token)
